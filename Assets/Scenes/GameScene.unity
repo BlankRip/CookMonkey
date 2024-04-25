@@ -420,6 +420,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 7
   rotateSpeed: 7
+  playerHight: 2
+  playerRadius: 0.7
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
