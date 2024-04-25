@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class GameInput : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public class GameInput : MonoBehaviour
         }
     }
 
-    InputAction playerMove;
+    private InputAction playerMove;
     private void Start()
     {
         playerMove = playerInput.actions["Move"];
