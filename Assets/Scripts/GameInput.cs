@@ -21,7 +21,7 @@ public class GameInput : MonoBehaviour
         }
     }
 
-    public event EventHandler OnInteractAction;
+    public event Action OnInteractAction;
 
     private InputAction playerMove;
     private InputAction interact;
@@ -39,7 +39,7 @@ public class GameInput : MonoBehaviour
 
     private void InteractPerformed(InputAction.CallbackContext obj)
     {
-        OnInteractAction?.Invoke(this, EventArgs.Empty);
+        OnInteractAction?.Invoke();
     }
 
     public Vector2 GetMovementVectorNormalized()

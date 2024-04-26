@@ -6,13 +6,7 @@ using UnityEngine;
 public class ContatinerCounter : BaseCounter
 {
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
-    [SerializeField] private SpriteRenderer kitchenObjectSprite;
     public Action OnPlayerGrabbedObject;
-
-    private void Start()
-    {
-        kitchenObjectSprite.sprite = kitchenObjectSO.Sprite;
-    }
 
     public override void Interact(Player player)
     {

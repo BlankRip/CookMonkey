@@ -59,7 +59,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         }
     }
 
-    private void OnInteractAction(object sender, System.EventArgs e)
+    private void OnInteractAction()
     {
         selectedCounter?.Interact(this);
     }
