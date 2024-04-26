@@ -18,7 +18,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private float interactDistance = 2.0f;
     private RaycastHit intractionRayHit;
 
-    private ClearCounter selectedCounter;
+    private BaseCounter selectedCounter;
     private KitchenObject kitchenObjectHeld;
 
     private void Start()
@@ -41,11 +41,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     {
         if (Physics.Raycast(transform.position, transform.forward, out intractionRayHit, interactDistance, countersLayerMask))
         {
-            if(intractionRayHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if(intractionRayHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
-                if(selectedCounter != clearCounter)
+                if(selectedCounter != baseCounter)
                 {
-                    SetSelectedCounter(clearCounter);
+                    SetSelectedCounter(baseCounter);
                 }
             }
             else
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         selectedCounter?.Interact(this);
     }
 
-    private void SetSelectedCounter(ClearCounter counterToSelect)
+    private void SetSelectedCounter(BaseCounter counterToSelect)
     {
         selectedCounter = counterToSelect;
         GameEvents.Instance.InvokeOnSelectedCounter(this, selectedCounter);

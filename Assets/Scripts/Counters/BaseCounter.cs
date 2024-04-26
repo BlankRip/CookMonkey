@@ -1,26 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class ClearCounter : MonoBehaviour, IKitchenObjectParent
+public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 {
-    [SerializeField] private KitchenObjectSO kitchenObjectSO;
     [SerializeField] private Transform counterTopPoint;
 
     private KitchenObject kitchenObjectHeld;
 
-    public void Interact(Player player)
+    public virtual void Interact(Player player)
     {
-        if(kitchenObjectHeld == null)
-        {
-            Transform spawnedKitchenObject = GameObject.Instantiate(kitchenObjectSO.Prefab);
-            spawnedKitchenObject.GetComponent<KitchenObject>().SetKitchenObjectParent(this);
-        }
-        else
-        {
-            kitchenObjectHeld.SetKitchenObjectParent(player);
-        }
+        Debug.Log("Base Class has no intreact logic");
     }
 
     public Transform GetKitchenObjectParentTransform()
