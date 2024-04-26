@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,7 +16,23 @@ public class Player : MonoBehaviour
     private float playerRadius = 0.7f;
     private float interactDistance = 2.0f;
     private RaycastHit intractionRayHit;
-    
+
+    private void Start()
+    {
+        GameInput.Instance.OnInteractAction += OnInteractAction;
+    }
+
+    private void OnDestroy()
+    {
+        GameInput.Instance.OnInteractAction -= OnInteractAction;
+    }
+
+    ClearCounter selectedCounter;
+    private void OnInteractAction(object sender, System.EventArgs e)
+    {
+        selectedCounter?.Interact();
+    }
+
     private void Update()
     {
         HandleMovement();
@@ -23,13 +41,30 @@ public class Player : MonoBehaviour
 
     private void HandleInteractions()
     {
-        if(Physics.Raycast(transform.position, transform.forward, out intractionRayHit, interactDistance, countersLayerMask))
+        if (Physics.Raycast(transform.position, transform.forward, out intractionRayHit, interactDistance, countersLayerMask))
         {
             if(intractionRayHit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
-                clearCounter.Interact();
+                if(selectedCounter != clearCounter)
+                {
+                    SetSelectedCounter(clearCounter);
+                }
+            }
+            else
+            {
+                SetSelectedCounter(null);
             }
         }
+        else
+        {
+            SetSelectedCounter(null);
+        }
+    }
+
+    private void SetSelectedCounter(ClearCounter counterToSelect)
+    {
+        selectedCounter = counterToSelect;
+        GameEvents.Instance.InvokeOnSelectedCounter(this, selectedCounter);
     }
 
     private void HandleMovement()
