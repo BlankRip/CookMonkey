@@ -5,17 +5,21 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IKitchenObjectParent
 {
     [SerializeField] private float moveSpeed = 7.0f;
     [SerializeField] private float rotateSpeed = 7.0f;
     [SerializeField] private LayerMask countersLayerMask;
+    [SerializeField] private Transform kitchenObjectHoldParent;
     public bool IsWalking { get; private set; }
 
     private float playerHight = 2.0f;
     private float playerRadius = 0.7f;
     private float interactDistance = 2.0f;
     private RaycastHit intractionRayHit;
+
+    private ClearCounter selectedCounter;
+    private KitchenObject kitchenObjectHeld;
 
     private void Start()
     {
@@ -25,12 +29,6 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         GameInput.Instance.OnInteractAction -= OnInteractAction;
-    }
-
-    ClearCounter selectedCounter;
-    private void OnInteractAction(object sender, System.EventArgs e)
-    {
-        selectedCounter?.Interact();
     }
 
     private void Update()
@@ -59,6 +57,11 @@ public class Player : MonoBehaviour
         {
             SetSelectedCounter(null);
         }
+    }
+
+    private void OnInteractAction(object sender, System.EventArgs e)
+    {
+        selectedCounter?.Interact(this);
     }
 
     private void SetSelectedCounter(ClearCounter counterToSelect)
@@ -110,4 +113,31 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    #region IKitchenObjectParent
+    public Transform GetKitchenObjectParentTransform()
+    {
+        return kitchenObjectHoldParent;
+    }
+
+    public void SetKitchenObjectHeld(KitchenObject kitchenObject)
+    {
+        kitchenObjectHeld = kitchenObject;
+    }
+
+    public KitchenObject GetKitchenObjectHeld()
+    {
+        return kitchenObjectHeld;
+    }
+
+    public void ClearKitchenbjectHeld()
+    {
+        kitchenObjectHeld = null;
+    }
+
+    public bool IsHoldingKitchenObject()
+    {
+        return kitchenObjectHeld != null;
+    }
+    #endregion
 }

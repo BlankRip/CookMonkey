@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ClearCounter : MonoBehaviour
+public class ClearCounter : MonoBehaviour, IKitchenObjectParent
 {
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
     [SerializeField] private Transform counterTopPoint;
 
     private KitchenObject kitchenObjectHeld;
 
-    public void Interact()
+    public void Interact(Player player)
     {
         if(kitchenObjectHeld == null)
         {
             Transform spawnedKitchenObject = GameObject.Instantiate(kitchenObjectSO.Prefab);
-            spawnedKitchenObject.GetComponent<KitchenObject>().SetClearCounter(this);
+            spawnedKitchenObject.GetComponent<KitchenObject>().SetKitchenObjectParent(this);
         }
         else
         {
-            Debug.Log("Can Pick up");
+            kitchenObjectHeld.SetKitchenObjectParent(player);
         }
     }
 
-    public Transform GetCounterTopPointTransform()
+    public Transform GetKitchenObjectParentTransform()
     {
         return counterTopPoint;
     }
@@ -43,7 +43,7 @@ public class ClearCounter : MonoBehaviour
         kitchenObjectHeld = null;
     }
 
-    public bool HoldingAKitchenObject()
+    public bool IsHoldingKitchenObject()
     {
         return kitchenObjectHeld != null;
     }
