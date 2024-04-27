@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 736cb9a0b3278fd44b23d8b0fceba73c, type: 3}
-  m_Name: CheeseBlock
+  m_Name: CabbageSlices
   m_EditorClassIdentifier: 
-  <Prefab>k__BackingField: {fileID: 1047857678188564122, guid: 4d61a7dc8e64f6547a5356e4380cf21e,
+  <Prefab>k__BackingField: {fileID: 1047857678188564122, guid: b01bb50960e5fda4287c1347ff68de03,
     type: 3}
-  <Sprite>k__BackingField: {fileID: 21300000, guid: da2d04fe27b94e34ea0b624569b48a6f,
+  <Sprite>k__BackingField: {fileID: 21300000, guid: bee24f07c57157e45a946eed3bfe8b84,
     type: 3}
-  <ObjectName>k__BackingField: Cheese Block
+  <ObjectName>k__BackingField: Cabbage Slices

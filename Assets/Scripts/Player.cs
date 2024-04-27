@@ -15,7 +15,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private float playerHight = 2.0f;
     private float playerRadius = 0.7f;
-    private float interactDistance = 2.0f;
+    private float interactDistance = 1.5f;
     private RaycastHit intractionRayHit;
 
     private BaseCounter selectedCounter;
@@ -24,11 +24,13 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private void Start()
     {
         GameInput.Instance.OnInteractAction += OnInteractAction;
+        GameInput.Instance.OnInteractAlternateAction += OnInteractAlternateAction;
     }
 
     private void OnDestroy()
     {
         GameInput.Instance.OnInteractAction -= OnInteractAction;
+        GameInput.Instance.OnInteractAlternateAction -= OnInteractAlternateAction;
     }
 
     private void Update()
@@ -62,6 +64,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private void OnInteractAction()
     {
         selectedCounter?.Interact(this);
+    }
+
+    private void OnInteractAlternateAction()
+    {
+        selectedCounter?.InteractAlternate(this);
     }
 
     private void SetSelectedCounter(BaseCounter counterToSelect)

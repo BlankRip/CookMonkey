@@ -13,6 +13,11 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
         Debug.Log("Base Class has no intreact logic");
     }
 
+    public virtual void InteractAlternate(Player player)
+    {
+        Debug.Log("Base Class has no intreact logic");
+    }
+
     public Transform GetKitchenObjectParentTransform()
     {
         return counterTopPoint;
