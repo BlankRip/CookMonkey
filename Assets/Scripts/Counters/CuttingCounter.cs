@@ -1,20 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CuttingCounter : BaseCounter
 {
+    /// <summary>
+    /// the float is the normalized progress value
+    /// </summary>
+    public event Action<float> OnProgressChanged;
+    public event Action OnCut;
+
     [SerializeField] CuttingRecipeSO[] cuttingRecepiesSOArray;
-    private static Dictionary<KitchenObjectSO, KitchenObjectSO> objectToSlices;
+    private static Dictionary<KitchenObjectSO, CuttingRecipeSO> cuttingRecipeDictionary;
+    CuttingRecipeSO currentCuttingRecipe;
+    private int cuttingProgress;
 
     private void Awake()
     {
-        if(objectToSlices == null)
+        if(cuttingRecipeDictionary == null)
         {
-            objectToSlices = new Dictionary<KitchenObjectSO, KitchenObjectSO>();
+            cuttingRecipeDictionary = new Dictionary<KitchenObjectSO, CuttingRecipeSO>();
             foreach(CuttingRecipeSO cuttingRecipe in cuttingRecepiesSOArray)
             {
-                objectToSlices.Add(cuttingRecipe.Input, cuttingRecipe.Output);
+                cuttingRecipeDictionary.Add(cuttingRecipe.Input, cuttingRecipe);
             }
         }
     }
@@ -25,8 +34,11 @@ public class CuttingCounter : BaseCounter
         {
             if (player.IsHoldingKitchenObject())
             {
-                if(objectToSlices.ContainsKey(player.GetKitchenObjectHeld().KitchenObjectSO))
+                if(cuttingRecipeDictionary.ContainsKey(player.GetKitchenObjectHeld().KitchenObjectSO))
                 {
+                    cuttingProgress = 0;
+                    OnProgressChanged?.Invoke((float)cuttingProgress);
+                    currentCuttingRecipe = cuttingRecipeDictionary[player.GetKitchenObjectHeld().KitchenObjectSO];
                     player.GetKitchenObjectHeld().SetKitchenObjectParent(this);
                 }
             }
@@ -36,17 +48,24 @@ public class CuttingCounter : BaseCounter
             if (!player.IsHoldingKitchenObject())
             {
                 GetKitchenObjectHeld().SetKitchenObjectParent(player);
+                currentCuttingRecipe = null;
             }
         }
     }
 
     public override void InteractAlternate(Player player)
     {
-        if (IsHoldingKitchenObject() && objectToSlices.ContainsKey(GetKitchenObjectHeld().KitchenObjectSO))
+        if (IsHoldingKitchenObject() && currentCuttingRecipe.Input == GetKitchenObjectHeld().KitchenObjectSO)
         {
-            KitchenObjectSO slicedSO = objectToSlices[GetKitchenObjectHeld().KitchenObjectSO];
-            GetKitchenObjectHeld().DestroySelf();
-            KitchenObject.SpawnKitchenObject(slicedSO, this);
+            cuttingProgress++;
+            OnProgressChanged?.Invoke((float)cuttingProgress/ currentCuttingRecipe.CuttingProgressMax);
+            OnCut?.Invoke();
+            if (cuttingProgress >= currentCuttingRecipe.CuttingProgressMax)
+            {
+                KitchenObjectSO slicedSO = currentCuttingRecipe.Output;
+                GetKitchenObjectHeld().DestroySelf();
+                KitchenObject.SpawnKitchenObject(slicedSO, this);
+            }
         }
     }
 }
