@@ -8,5 +8,5 @@ public interface IKitchenObjectParent
     public void SetKitchenObjectHeld(KitchenObject kitchenObject);
     public KitchenObject GetKitchenObjectHeld();
     public void ClearKitchenbjectHeld();
-    public bool IsHoldingKitchenObject();
+    public bool HasKitchenObject();
 }

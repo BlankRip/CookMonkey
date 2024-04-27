@@ -10,7 +10,7 @@ public class ContatinerCounter : BaseCounter
 
     public override void Interact(Player player)
     {
-        if(!player.IsHoldingKitchenObject())
+        if(!player.HasKitchenObject())
         {
             KitchenObject.SpawnKitchenObject(kitchenObjectSO, player);
             OnPlayerGrabbedObject?.Invoke();

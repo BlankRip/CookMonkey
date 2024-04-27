@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CuttingCounter : BaseCounter
+public class CuttingCounter : BaseCounter, IHasProgress
 {
     /// <summary>
     /// the float is the normalized progress value
@@ -30,9 +30,9 @@ public class CuttingCounter : BaseCounter
 
     public override void Interact(Player player)
     {
-        if (!IsHoldingKitchenObject())
+        if (!HasKitchenObject())
         {
-            if (player.IsHoldingKitchenObject())
+            if (player.HasKitchenObject())
             {
                 if(cuttingRecipeDictionary.ContainsKey(player.GetKitchenObjectHeld().KitchenObjectSO))
                 {
@@ -45,17 +45,18 @@ public class CuttingCounter : BaseCounter
         }
         else
         {
-            if (!player.IsHoldingKitchenObject())
+            if (!player.HasKitchenObject())
             {
                 GetKitchenObjectHeld().SetKitchenObjectParent(player);
                 currentCuttingRecipe = null;
+                OnProgressChanged?.Invoke(0);
             }
         }
     }
 
     public override void InteractAlternate(Player player)
     {
-        if (IsHoldingKitchenObject() && currentCuttingRecipe.Input == GetKitchenObjectHeld().KitchenObjectSO)
+        if (HasKitchenObject() && currentCuttingRecipe.Input == GetKitchenObjectHeld().KitchenObjectSO)
         {
             cuttingProgress++;
             OnProgressChanged?.Invoke((float)cuttingProgress/ currentCuttingRecipe.CuttingProgressMax);

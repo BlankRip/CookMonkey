@@ -15,9 +15,9 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 
     public virtual void InteractAlternate(Player player)
     {
-        Debug.Log("Base Class has no intreact logic");
     }
 
+    #region IKitchenObjectParent
     public Transform GetKitchenObjectParentTransform()
     {
         return counterTopPoint;
@@ -38,8 +38,9 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
         kitchenObjectHeld = null;
     }
 
-    public bool IsHoldingKitchenObject()
+    public bool HasKitchenObject()
     {
         return kitchenObjectHeld != null;
     }
+    #endregion
 }
