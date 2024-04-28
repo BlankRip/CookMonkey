@@ -72,8 +72,7 @@ public class StoveCounter : BaseCounter, IHasProgress
             }
             else
             {
-                Debug.LogError("there is no recepy to move from fried to burnt");
-                SetState(State.Idle);
+                SetState(State.Burnt);
             }
         }
     }
