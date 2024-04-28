@@ -51,6 +51,16 @@ public class CuttingCounter : BaseCounter, IHasProgress
                 currentCuttingRecipe = null;
                 OnProgressChanged?.Invoke(0);
             }
+            else
+            {
+                if (player.GetKitchenObjectHeld().TryGetPlate(out PlateKitchenObject plate))
+                {
+                    if (plate.TryAddIngredient(GetKitchenObjectHeld().KitchenObjectSO))
+                    {
+                        GetKitchenObjectHeld().DestroySelf();
+                    }
+                }
+            }
         }
     }
 
