@@ -1,9 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlateKitchenObject : KitchenObject
 {
+    /// <summary>
+    /// KitchenObjectSO is the ingredient that is added to the plate
+    /// </summary>
+    public Action<KitchenObjectSO> OnIngredientAdded;
+
     [SerializeField] List<KitchenObjectSO> validKitchenObjectSOList;
     private List<KitchenObjectSO> kitchenObjectSOList;
 
@@ -19,6 +25,7 @@ public class PlateKitchenObject : KitchenObject
             return false;
         }
         kitchenObjectSOList.Add(kitchenObjectSO);
+        OnIngredientAdded?.Invoke(kitchenObjectSO);
         return true;
     }
 }
