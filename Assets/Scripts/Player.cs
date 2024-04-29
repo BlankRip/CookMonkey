@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour, IKitchenObjectParent
 {
+    public event Action OnPickSomething;
+
     [SerializeField] private float moveSpeed = 7.0f;
     [SerializeField] private float rotateSpeed = 7.0f;
     [SerializeField] private LayerMask countersLayerMask;
@@ -130,6 +132,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObjectHeld(KitchenObject kitchenObject)
     {
         kitchenObjectHeld = kitchenObject;
+        OnPickSomething?.Invoke();
     }
 
     public KitchenObject GetKitchenObjectHeld()

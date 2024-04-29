@@ -23,6 +23,7 @@ public class DeliveryManager : MonoBehaviour
 
     public Action OnRecipeSpawn;
     public Action OnRecipeCompleted;
+    public Action OnRecipeFailed;
 
     [SerializeField] RecipeSO[] allRecipiesSOArray;
     private List<RecipeSO> waitingRecipeSOList;
@@ -50,7 +51,7 @@ public class DeliveryManager : MonoBehaviour
         }
     }
 
-    public bool DeliverRecipe(PlateKitchenObject deliveryPlate)
+    public void DeliverRecipe(PlateKitchenObject deliveryPlate)
     {
         List<KitchenObjectSO> kitchenObjectsOnPlate = deliveryPlate.GetItemsOnPlateKitchenObectSOList();
         foreach (RecipeSO recipe in waitingRecipeSOList)
@@ -70,14 +71,12 @@ public class DeliveryManager : MonoBehaviour
             }
             if (plateContentMatchedRecipe)
             {
-                Debug.Log("Plyaer Delivered a correct recipe");
                 waitingRecipeSOList.Remove(recipe);
                 OnRecipeCompleted?.Invoke();
-                return true;
+                return;
             }
         }
-        Debug.Log("No matches found");
-        return false;
+        OnRecipeFailed?.Invoke();
     }
 
     public List<RecipeSO> GetWaitingRecipeSOList()

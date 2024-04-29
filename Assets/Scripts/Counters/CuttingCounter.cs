@@ -10,6 +10,10 @@ public class CuttingCounter : BaseCounter, IHasProgress
     /// </summary>
     public event Action<float> OnProgressChanged;
     public event Action OnCut;
+    /// <summary>
+    /// Cutting Counter passed in is the sender
+    /// </summary>
+    public static event Action<CuttingCounter> OnAnyCut;
 
     [SerializeField] CuttingRecipeSO[] cuttingRecepiesSOArray;
     private static Dictionary<KitchenObjectSO, CuttingRecipeSO> cuttingRecipeDictionary;
@@ -71,6 +75,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             cuttingProgress++;
             OnProgressChanged?.Invoke((float)cuttingProgress/ currentCuttingRecipe.CuttingProgressMax);
             OnCut?.Invoke();
+            OnAnyCut?.Invoke(this);
             if (cuttingProgress >= currentCuttingRecipe.CuttingProgressMax)
             {
                 KitchenObjectSO slicedSO = currentCuttingRecipe.Output;
