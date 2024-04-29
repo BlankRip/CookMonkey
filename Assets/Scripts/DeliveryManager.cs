@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class DeliveryManager : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+            waitingRecipeSOList = new List<RecipeSO>();
         }
         else
         {
@@ -18,6 +20,9 @@ public class DeliveryManager : MonoBehaviour
         }
     }
     #endregion
+
+    public Action OnRecipeSpawn;
+    public Action OnRecipeCompleted;
 
     [SerializeField] RecipeSO[] allRecipiesSOArray;
     private List<RecipeSO> waitingRecipeSOList;
@@ -27,7 +32,6 @@ public class DeliveryManager : MonoBehaviour
 
     private void Start()
     {
-        waitingRecipeSOList = new List<RecipeSO>();
         spawnRecipeTimer = spawnRecipeTimerMax;
     }
 
@@ -39,9 +43,9 @@ public class DeliveryManager : MonoBehaviour
             if(spawnRecipeTimer >= spawnRecipeTimerMax)
             {
                 spawnRecipeTimer = 0;
-                RecipeSO selectedRecipe = allRecipiesSOArray[Random.Range(0, allRecipiesSOArray.Length)];
+                RecipeSO selectedRecipe = allRecipiesSOArray[UnityEngine.Random.Range(0, allRecipiesSOArray.Length)];
                 waitingRecipeSOList.Add(selectedRecipe);
-                Debug.Log(selectedRecipe.RecipeName);
+                OnRecipeSpawn?.Invoke();
             }
         }
     }
@@ -68,6 +72,7 @@ public class DeliveryManager : MonoBehaviour
             {
                 Debug.Log("Plyaer Delivered a correct recipe");
                 waitingRecipeSOList.Remove(recipe);
+                OnRecipeCompleted?.Invoke();
                 return true;
             }
         }
@@ -75,4 +80,8 @@ public class DeliveryManager : MonoBehaviour
         return false;
     }
 
+    public List<RecipeSO> GetWaitingRecipeSOList()
+    {
+        return waitingRecipeSOList;
+    }
 }
