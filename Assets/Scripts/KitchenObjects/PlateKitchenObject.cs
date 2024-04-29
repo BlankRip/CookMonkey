@@ -28,4 +28,9 @@ public class PlateKitchenObject : KitchenObject
         OnIngredientAdded?.Invoke(kitchenObjectSO);
         return true;
     }
+
+    public List<KitchenObjectSO> GetItemsOnPlateKitchenObectSOList()
+    {
+        return kitchenObjectSOList;
+    }
 }
