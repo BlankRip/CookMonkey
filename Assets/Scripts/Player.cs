@@ -65,6 +65,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void OnInteractAction()
     {
+        if(!KitchenGameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
         selectedCounter?.Interact(this);
     }
 
