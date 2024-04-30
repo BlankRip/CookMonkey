@@ -23,23 +23,28 @@ public class GameInput : MonoBehaviour
 
     public event Action OnInteractAction;
     public event Action OnInteractAlternateAction;
+    public event Action OnPauseAction;
 
     private InputAction playerMove;
     private InputAction interact;
     private InputAction interactAlternate;
+    private InputAction pause;
     private void Start()
     {
         playerMove = playerInput.actions["Move"];
         interact = playerInput.actions["Interact"];
         interactAlternate = playerInput.actions["InteractAlternate"];
+        pause = playerInput.actions["Pause"];
         interact.performed += InteractPerformed;
         interactAlternate.performed += InteractAlternatePerformed;
+        pause.performed += PausePerformed;
     }
 
     private void OnDestroy()
     {
         interact.performed -= InteractPerformed;
         interactAlternate.performed -= InteractAlternatePerformed;
+        pause.performed -= PausePerformed;
     }
 
     private void InteractAlternatePerformed(InputAction.CallbackContext obj)
@@ -57,5 +62,10 @@ public class GameInput : MonoBehaviour
         Vector2 inputVector = playerMove.ReadValue<Vector2>();
         inputVector.Normalize();
         return inputVector;
+    }
+
+    private void PausePerformed(InputAction.CallbackContext obj)
+    {
+        OnPauseAction?.Invoke();
     }
 }

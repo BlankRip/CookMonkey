@@ -21,16 +21,24 @@ public class KitchenGameManager : MonoBehaviour
     private enum GameState { WaitingToStart, CountdownToStart, GamePlaying, GameOver }
 
     public event Action OnStateChange;
+    public event Action<bool> OnGamePauseToggled;
 
     private GameState currentState;
     private float waitingToStartTimer = 1.0f;
     private float countDownToStartTimer = 3.0f;
     private float gamePlayTimer;
     private float gamePlayTimerMax = 10.0f;
+    private bool isGamePaused = false;
 
     private void Start()
     {
         currentState = GameState.WaitingToStart;
+        GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
+    }
+
+    private void OnDestroy()
+    {
+        GameInput.Instance.OnPauseAction -= GameInput_OnPauseAction;
     }
 
     private void Update()
@@ -67,6 +75,29 @@ public class KitchenGameManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private void GameInput_OnPauseAction()
+    {
+        if(currentState == GameState.GamePlaying)
+        {
+            TogglePause();
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (!isGamePaused)
+        {
+            Time.timeScale = 0.0f;
+            isGamePaused = true;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+            isGamePaused = false;
+        }
+        OnGamePauseToggled?.Invoke(isGamePaused);
     }
 
     public bool IsGamePlaying()
