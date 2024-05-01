@@ -30,7 +30,7 @@ public class GameInput : MonoBehaviour
 
     public enum Binding
     {
-        Up, Down, Left, Right, Interact, InteractAlt, Pause
+        Up, Down, Left, Right, Interact, InteractAlt, Pause, GamePad_Interact, GamePad_InteractAlt, GamePad_Pause
     }
 
     private const string PLAYER_PREFS_BINDINGS_KEY = "InputBindings"; 
@@ -103,6 +103,12 @@ public class GameInput : MonoBehaviour
                 return interactAlternate.bindings[0].ToDisplayString();
             case Binding.Pause:
                 return pause.bindings[0].ToDisplayString();
+            case Binding.GamePad_Interact:
+                return interact.bindings[1].ToDisplayString();
+            case Binding.GamePad_InteractAlt:
+                return interactAlternate.bindings[1].ToDisplayString();
+            case Binding.GamePad_Pause:
+                return pause.bindings[1].ToDisplayString();
         }
         return "N/D";
     }
@@ -142,6 +148,18 @@ public class GameInput : MonoBehaviour
             case Binding.Pause:
                 inputAction = pause;
                 bindingIndex = 0;
+                break;
+            case Binding.GamePad_Interact:
+                inputAction = interact;
+                bindingIndex = 1;
+                break;
+            case Binding.GamePad_InteractAlt:
+                inputAction = interactAlternate;
+                bindingIndex = 1;
+                break;
+            case Binding.GamePad_Pause:
+                inputAction = pause;
+                bindingIndex = 1;
                 break;
         }
 

@@ -106,7 +106,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void HandleDiagonalCollisionDetection(ref bool canMove, ref Vector3 moveDir)
     {
-        if (!canMove && (moveDir.x != 0 && moveDir.z != 0))
+        bool accountForX = moveDir.x < -0.5f || moveDir.x > 0.5f;
+        bool accountForZ = moveDir.z < -0.5f || moveDir.z > 0.5f;
+        if (!canMove && (accountForX && accountForZ))
         {
             float moveDistance = moveSpeed * Time.deltaTime;
             Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
