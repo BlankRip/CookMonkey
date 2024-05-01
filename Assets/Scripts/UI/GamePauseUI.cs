@@ -5,26 +5,44 @@ using UnityEngine.UI;
 
 public class GamePauseUI : MonoBehaviour
 {
-    [SerializeField] private Button mainMenuButton;
     [SerializeField] private Button resumeButton;
+    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button mainMenuButton;
+    [SerializeField] private OptionsUI optionsUI;
 
     private void Start()
     {
         mainMenuButton.onClick.AddListener(() => { Loader.Load(Loader.Scene.MainMenuScene); });
         resumeButton.onClick.AddListener(() => { KitchenGameManager.Instance.TogglePause(); });
+        optionsButton?.onClick.AddListener(() => { optionsUI?.Show(this); Hide(); });
         KitchenGameManager.Instance.OnGamePauseToggled += KitchenGameManger_OnGamePauseToggled;
-        gameObject.SetActive(false);
+        Hide();
+    }
+
+    private void OnDestroy()
+    {
+        KitchenGameManager.Instance.OnGamePauseToggled -= KitchenGameManger_OnGamePauseToggled;
     }
 
     private void KitchenGameManger_OnGamePauseToggled(bool isPaused)
     {
         if(isPaused)
         {
-            gameObject.SetActive(true);
+            Show();
         }
         else
         {
-            gameObject.SetActive(false);
+            Hide();
         }
+    }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
     }
 }

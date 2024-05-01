@@ -10,12 +10,15 @@ public class SoundManager : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+            volume = PlayerPrefs.GetFloat(PLAYER_PREFS_SFX_VOLUME_KEY, 1.0f);
         }
         else
         {
             Destroy(this.gameObject);
         }
     }
+
+    private const string PLAYER_PREFS_SFX_VOLUME_KEY = "SfxVolume";
 
     [SerializeField] Player player;
     [SerializeField] DeliveryCounter deliveryCounter;
@@ -30,6 +33,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip[] trash;
     [SerializeField] private AudioClip[] warning;
     private Transform cameraTransform;
+    private float volume = 1.0f;
 
     private void Start()
     {
@@ -87,18 +91,34 @@ public class SoundManager : MonoBehaviour
         PlaySound(objectPickup, player.transform.position);
     }
 
-    public void PlayFootStepsSound(Vector3 position, float volume)
+    public void PlayFootStepsSound(Vector3 position, float volumeMultiplier)
     {
-        PlaySound(footSteps, position, volume);
+        PlaySound(footSteps, position, volumeMultiplier);
     }
 
-    public void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 1.0f)
+    public void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volumeMultiplier = 1.0f)
     {
-        PlaySound(audioClipArray[Random.Range(0, audioClipArray.Length)], position, volume);
+        PlaySound(audioClipArray[Random.Range(0, audioClipArray.Length)], position, volumeMultiplier);
     }
 
-    public void PlaySound(AudioClip audioClip, Vector3 position, float volume = 1.0f)
+    public void PlaySound(AudioClip audioClip, Vector3 position, float volumeMultiplier = 1.0f)
     {
-        AudioSource.PlayClipAtPoint(audioClip, position, volume);
+        AudioSource.PlayClipAtPoint(audioClip, position, volumeMultiplier * volume);
+    }
+
+    public void ChangeVolume()
+    {
+        volume += 0.1f;
+        if (volume > 1.05f)
+        {
+            volume = 0.0f;
+        }
+
+        PlayerPrefs.SetFloat(PLAYER_PREFS_SFX_VOLUME_KEY, volume);
+    }
+
+    public float GetVolume()
+    {
+        return volume;
     }
 }
