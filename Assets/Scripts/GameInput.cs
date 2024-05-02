@@ -33,7 +33,8 @@ public class GameInput : MonoBehaviour
         Up, Down, Left, Right, Interact, InteractAlt, Pause, GamePad_Interact, GamePad_InteractAlt, GamePad_Pause
     }
 
-    private const string PLAYER_PREFS_BINDINGS_KEY = "InputBindings"; 
+    private const string PLAYER_PREFS_BINDINGS_KEY = "InputBindings";
+    public event Action OnRebind;
 
     public event Action OnInteractAction;
     public event Action OnInteractAlternateAction;
@@ -170,6 +171,7 @@ public class GameInput : MonoBehaviour
             onActionRebound?.Invoke();
 
             PlayerPrefs.SetString(PLAYER_PREFS_BINDINGS_KEY, playerInput.actions.SaveBindingOverridesAsJson());
+            OnRebind?.Invoke();
         }).Start();
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SoundManager : MonoBehaviour
 {
@@ -94,6 +95,16 @@ public class SoundManager : MonoBehaviour
     public void PlayFootStepsSound(Vector3 position, float volumeMultiplier)
     {
         PlaySound(footSteps, position, volumeMultiplier);
+    }
+
+    public void PlayeCountdownSound()
+    {
+        PlaySound(warning, Vector3.zero);
+    }
+
+    public void PlayeWarningSound(Vector3 position)
+    {
+        PlaySound(warning, position);
     }
 
     public void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volumeMultiplier = 1.0f)

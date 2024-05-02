@@ -9,7 +9,7 @@ public class GamePlayingClockUI : MonoBehaviour
 
     private void Start()
     {
-            clockImage.fillAmount = 1.0f;        
+        clockImage.fillAmount = 1.0f;
     }
 
     private void Update()
