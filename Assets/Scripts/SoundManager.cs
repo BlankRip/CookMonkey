@@ -47,7 +47,7 @@ public class SoundManager : MonoBehaviour
         CuttingCounter.OnAnyCut += CuttingCounter_OnAnyCut;
         TrashCounter.OnAnyObjectTrashed += TrashCounter_OnAnyObjectTrashed;
 
-        player.OnPickSomething += Player_OnPickSomething;
+        //player.OnPickSomething += Player_OnPickSomething;
     }
 
     private void OnDestroy()
@@ -59,7 +59,7 @@ public class SoundManager : MonoBehaviour
         CuttingCounter.OnAnyCut -= CuttingCounter_OnAnyCut;
         TrashCounter.OnAnyObjectTrashed -= TrashCounter_OnAnyObjectTrashed;
 
-        player.OnPickSomething -= Player_OnPickSomething;
+        //player.OnPickSomething -= Player_OnPickSomething;
     }
 
     private void DeliveryManager_OnRecipeCompleted()
@@ -89,7 +89,7 @@ public class SoundManager : MonoBehaviour
 
     private void Player_OnPickSomething()
     {
-        PlaySound(objectPickup, player.transform.position);
+        //PlaySound(objectPickup, player.transform.position);
     }
 
     public void PlayFootStepsSound(Vector3 position, float volumeMultiplier)

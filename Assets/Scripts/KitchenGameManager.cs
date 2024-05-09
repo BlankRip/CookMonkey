@@ -24,7 +24,7 @@ public class KitchenGameManager : MonoBehaviour
     public event Action<bool> OnGamePauseToggled;
 
     private GameState currentState;
-    private float countDownToStartTimer = 3.0f;
+    private float countDownToStartTimer = 1.0f;
     private float gamePlayTimer;
     private float gamePlayTimerMax = 300.0f;
     private bool isGamePaused = false;
@@ -34,6 +34,10 @@ public class KitchenGameManager : MonoBehaviour
         currentState = GameState.WaitingToStart;
         GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+
+        //DEBUG start auto
+        currentState = GameState.CountdownToStart;
+        OnStateChange?.Invoke();
     }
 
     private void OnDestroy()
