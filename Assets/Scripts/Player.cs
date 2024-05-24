@@ -25,18 +25,27 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
 
     private void Start()
     {
+        if (!IsOwner)
+            return;
+
         GameInput.Instance.OnInteractAction += OnInteractAction;
         GameInput.Instance.OnInteractAlternateAction += OnInteractAlternateAction;
     }
 
     private void OnDestroy()
     {
+        if (!IsOwner)
+            return;
+
         GameInput.Instance.OnInteractAction -= OnInteractAction;
         GameInput.Instance.OnInteractAlternateAction -= OnInteractAlternateAction;
     }
 
     private void Update()
     {
+        if(!IsOwner) 
+            return;
+
         HandleMovement();
         HandleInteractions();
     }

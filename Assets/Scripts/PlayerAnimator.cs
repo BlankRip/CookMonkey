@@ -11,11 +11,16 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Start()
     {
+        if (!player.IsOwner)
+            return;
         animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        if (!player.IsOwner)
+            return;
+
         animator.SetBool(IS_WALKING, player.IsWalking);
     }
 }
