@@ -28,4 +28,13 @@ public class GameEvents : MonoBehaviour
         OnSelectedCounterChange?.Invoke(sender, selectedCounter);
     }
 
+    /// <summary>
+    /// Player is the sender
+    /// </summary>
+    public event Action<Player> OnPlayerPickSomething;
+    public void InvokeOnPlayerPickedSomething(Player sender)
+    {
+        OnPlayerPickSomething?.Invoke(sender);
+    }
+
 }

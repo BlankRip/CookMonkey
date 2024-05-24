@@ -7,8 +7,6 @@ using Unity.Netcode;
 
 public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    public event Action OnPickSomething;
-
     [SerializeField] private float moveSpeed = 7.0f;
     [SerializeField] private float rotateSpeed = 7.0f;
     [SerializeField] private LayerMask countersLayerMask;
@@ -147,7 +145,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public void SetKitchenObjectHeld(KitchenObject kitchenObject)
     {
         kitchenObjectHeld = kitchenObject;
-        OnPickSomething?.Invoke();
+        GameEvents.Instance.InvokeOnPlayerPickedSomething(this);
     }
 
     public KitchenObject GetKitchenObjectHeld()
@@ -163,6 +161,11 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObjectHeld != null;
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
     #endregion
 }
