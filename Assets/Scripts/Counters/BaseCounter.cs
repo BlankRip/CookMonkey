@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class BaseCounter : MonoBehaviour, IKitchenObjectParent
+public class BaseCounter : NetworkBehaviour, IKitchenObjectParent
 {
     /// <summary>
     /// Base Counter passed in is the sender
@@ -53,7 +53,7 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 
     public NetworkObject GetNetworkObject()
     {
-        return null;
+        return NetworkObject;
     }
     #endregion
 }

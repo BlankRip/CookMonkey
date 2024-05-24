@@ -9,24 +9,50 @@ public class KitchenObject : NetworkBehaviour
     public KitchenObjectSO KitchenObjectSO { get; private set; }
 
     private IKitchenObjectParent kitchenObjectParent;
+    private FollowTransform followTransform;
+
+    protected virtual void Start()
+    {
+        
+    }
 
     public void SetKitchenObjectParent(IKitchenObjectParent parentKitchenObject)
     {
-        if(kitchenObjectParent != null)
+        SetKitchenObjectParentServerRpc(parentKitchenObject.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetKitchenObjectParentServerRpc(NetworkObjectReference kitchenObjectParentNetworkObjectReference)
+    {
+        SetKitchenObjectParentClientRpc(kitchenObjectParentNetworkObjectReference);
+    }
+
+    [ClientRpc]
+    private void SetKitchenObjectParentClientRpc(NetworkObjectReference kitchenObjectParentNetworkObjectReference)
+    {
+        kitchenObjectParentNetworkObjectReference.TryGet(out NetworkObject kitchenObjectParentNetworkObject);
+        IKitchenObjectParent parentKitchenObject = kitchenObjectParentNetworkObject.GetComponent<IKitchenObjectParent>();
+
+        if (kitchenObjectParent != null)
         {
             kitchenObjectParent.ClearKitchenbjectHeld();
         }
 
         kitchenObjectParent = parentKitchenObject;
-        if(kitchenObjectParent.HasKitchenObject())
+        if (kitchenObjectParent.HasKitchenObject())
         {
             Debug.LogError("This IKitchenObjectParent already has a KitchenObject");
         }
         kitchenObjectParent.SetKitchenObjectHeld(this);
 
-        //transform.parent = kitchenObjectParent.GetKitchenObjectParentTransform();
-        //transform.localPosition = Vector3.zero;
+        if(followTransform == null)
+        {
+            followTransform = GetComponent<FollowTransform>();
+        }
+        followTransform.SetTargetTransform(kitchenObjectParent.GetKitchenObjectParentTransform());
     }
+
+
 
     public IKitchenObjectParent GetKitchenObjectParent()
     {
