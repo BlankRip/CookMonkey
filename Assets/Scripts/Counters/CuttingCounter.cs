@@ -61,7 +61,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
                 {
                     if (plate.TryAddIngredient(GetKitchenObjectHeld().KitchenObjectSO))
                     {
-                        GetKitchenObjectHeld().DestroySelf();
+                        KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
                     }
                 }
             }
@@ -79,7 +79,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             if (cuttingProgress >= currentCuttingRecipe.CuttingProgressMax)
             {
                 KitchenObjectSO slicedSO = currentCuttingRecipe.Output;
-                GetKitchenObjectHeld().DestroySelf();
+                KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
                 KitchenObject.SpawnKitchenObject(slicedSO, this);
             }
         }

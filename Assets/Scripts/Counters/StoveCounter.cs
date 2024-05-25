@@ -61,7 +61,7 @@ public class StoveCounter : BaseCounter, IHasProgress
         if (fryingTimer >= currentFryingRecipe.FryingTimerMax)
         {
             KitchenObjectSO friedSO = currentFryingRecipe.Output;
-            GetKitchenObjectHeld().DestroySelf();
+            KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
             KitchenObject.SpawnKitchenObject(friedSO, this);
 
             if (fryingRecipeDictionary.ContainsKey(currentFryingRecipe.Output))
@@ -84,7 +84,7 @@ public class StoveCounter : BaseCounter, IHasProgress
         if (burningTimer >= currentFryingRecipe.FryingTimerMax)
         {
             KitchenObjectSO friedSO = currentFryingRecipe.Output;
-            GetKitchenObjectHeld().DestroySelf();
+            KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
             KitchenObject.SpawnKitchenObject(friedSO, this);
             SetState(State.Burnt);
         }
@@ -121,7 +121,7 @@ public class StoveCounter : BaseCounter, IHasProgress
                 {
                     if (plate.TryAddIngredient(GetKitchenObjectHeld().KitchenObjectSO))
                     {
-                        GetKitchenObjectHeld().DestroySelf();
+                        KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
                         currentFryingRecipe = null;
                         SetState(State.Idle);
                         OnProgressChanged?.Invoke(0);
