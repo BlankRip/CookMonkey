@@ -26,16 +26,25 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         }
     }
 
+    public int GetKitchonObjectSOIndex(KitchenObjectSO kitchenObjectSO)
+    {
+        return allKitchenObjectsIndexDictionary[kitchenObjectSO];
+    }
+
+    public KitchenObjectSO GetKitchenObjectSOFromIndex(int index)
+    {
+        return allKitchenObjects.KitchenObjects[index];
+    }
+
     public void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
     {
-        int kitchenObjectSOIndex = allKitchenObjectsIndexDictionary[kitchenObjectSO];
-        SpawnKitchenObjectServerRpc(kitchenObjectSOIndex, kitchenObjectParent.GetNetworkObject());
+        SpawnKitchenObjectServerRpc(GetKitchonObjectSOIndex(kitchenObjectSO), kitchenObjectParent.GetNetworkObject());
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SpawnKitchenObjectServerRpc(int kitchenObjectSOIndex, NetworkObjectReference kitchenObjectParentNetworkObjectReference)
     {
-        Transform spawnedKitchenObject = GameObject.Instantiate(allKitchenObjects.KitchenObjects[kitchenObjectSOIndex].Prefab);
+        Transform spawnedKitchenObject = GameObject.Instantiate(GetKitchenObjectSOFromIndex(kitchenObjectSOIndex).Prefab);
         NetworkObject kitchenNetworkObject = spawnedKitchenObject.GetComponent<NetworkObject>();
         kitchenNetworkObject.Spawn(true);
 
