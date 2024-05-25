@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class CuttingCounter : BaseCounter, IHasProgress
@@ -17,7 +18,6 @@ public class CuttingCounter : BaseCounter, IHasProgress
 
     [SerializeField] CuttingRecipeSO[] cuttingRecepiesSOArray;
     private static Dictionary<KitchenObjectSO, CuttingRecipeSO> cuttingRecipeDictionary;
-    CuttingRecipeSO currentCuttingRecipe;
     private int cuttingProgress;
 
     private void Awake()
@@ -40,9 +40,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             {
                 if(cuttingRecipeDictionary.ContainsKey(player.GetKitchenObjectHeld().KitchenObjectSO))
                 {
-                    cuttingProgress = 0;
-                    OnProgressChanged?.Invoke((float)cuttingProgress);
-                    currentCuttingRecipe = cuttingRecipeDictionary[player.GetKitchenObjectHeld().KitchenObjectSO];
+                    InteractLocgicPlaceObjectOnCounterServerRpc();
                     player.GetKitchenObjectHeld().SetKitchenObjectParent(this);
                 }
             }
@@ -52,8 +50,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             if (!player.HasKitchenObject())
             {
                 GetKitchenObjectHeld().SetKitchenObjectParent(player);
-                currentCuttingRecipe = null;
-                OnProgressChanged?.Invoke(0);
+                InteractLocgicPlaceObjectOnCounterServerRpc();
             }
             else
             {
@@ -68,20 +65,53 @@ public class CuttingCounter : BaseCounter, IHasProgress
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void InteractLocgicPlaceObjectOnCounterServerRpc()
+    {
+        InteractLocgicPlaceObjectOnCounterClientRpc();
+    }
+
+    [ClientRpc]
+    public void InteractLocgicPlaceObjectOnCounterClientRpc()
+    {
+        cuttingProgress = 0;
+        OnProgressChanged?.Invoke((float)cuttingProgress);
+    }
+
     public override void InteractAlternate(Player player)
     {
-        if (HasKitchenObject() && currentCuttingRecipe.Input == GetKitchenObjectHeld().KitchenObjectSO)
+        if (HasKitchenObject() && cuttingRecipeDictionary.ContainsKey(cuttingRecipeDictionary[GetKitchenObjectHeld().KitchenObjectSO].Input))
         {
-            cuttingProgress++;
-            OnProgressChanged?.Invoke((float)cuttingProgress/ currentCuttingRecipe.CuttingProgressMax);
-            OnCut?.Invoke();
-            OnAnyCut?.Invoke(this);
-            if (cuttingProgress >= currentCuttingRecipe.CuttingProgressMax)
-            {
-                KitchenObjectSO slicedSO = currentCuttingRecipe.Output;
-                KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
-                KitchenObject.SpawnKitchenObject(slicedSO, this);
-            }
+            CutObjectServerRpc();
+            TestCuttingDoneServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void CutObjectServerRpc()
+    {
+        CutObjectClientRpc();
+    }
+
+    [ClientRpc]
+    private void CutObjectClientRpc()
+    {
+        cuttingProgress++;
+        CuttingRecipeSO currentCuttingRecipe = cuttingRecipeDictionary[GetKitchenObjectHeld().KitchenObjectSO];
+        OnProgressChanged?.Invoke((float)cuttingProgress / currentCuttingRecipe.CuttingProgressMax);
+        OnCut?.Invoke();
+        OnAnyCut?.Invoke(this);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TestCuttingDoneServerRpc()
+    {
+        CuttingRecipeSO currentCuttingRecipe = cuttingRecipeDictionary[GetKitchenObjectHeld().KitchenObjectSO];
+        if (cuttingProgress >= currentCuttingRecipe.CuttingProgressMax)
+        {
+            KitchenObjectSO slicedSO = currentCuttingRecipe.Output;
+            KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
+            KitchenObject.SpawnKitchenObject(slicedSO, this);
         }
     }
 }
