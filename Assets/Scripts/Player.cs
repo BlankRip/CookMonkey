@@ -35,6 +35,19 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public override void OnNetworkSpawn()
     {
         transform.position = spawnPositions[(int)OwnerClientId];
+
+        if(IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if(clientId == OwnerClientId && HasKitchenObject())
+        {
+            KitchenObject.DestroyKitchenObject(GetKitchenObjectHeld());
+        }
     }
 
     private void OnDestroy()
@@ -48,7 +61,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
 
     private void Update()
     {
-        if(!IsOwner || KitchenGameManager.Instance.IsGamePaused) 
+        if(!IsOwner || KitchenGameManager.Instance.IsGamePaused)
             return;
 
         HandleMovement();

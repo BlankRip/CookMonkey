@@ -5,9 +5,8 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverUI : MonoBehaviour
+public class HostDisconnectedUI : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI recipesDeliveredText;
     [SerializeField] private Button playAgainButton;
     [SerializeField] private Button mainMenuButton;
 
@@ -19,21 +18,16 @@ public class GameOverUI : MonoBehaviour
             NetworkManager.Singleton.Shutdown();
             Loader.Load(Loader.Scene.MainMenuScene);
         });
-        KitchenGameManager.Instance.OnStateChange += KitchenGameManger_OnStateChange;
         gameObject.SetActive(false);
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
     }
 
-    private void KitchenGameManger_OnStateChange()
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        if (KitchenGameManager.Instance.IsGameOver())
+        if(clientId == NetworkManager.ServerClientId)
         {
-            recipesDeliveredText.SetText(DeliveryManager.Instance.GetSuccessfulDeliveriesAmount().ToString());
             gameObject.SetActive(true);
-            playAgainButton.Select();
-        }
-        else
-        {
-            gameObject.SetActive(false);
         }
     }
 }

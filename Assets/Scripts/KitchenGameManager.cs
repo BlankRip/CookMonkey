@@ -48,7 +48,6 @@ public class KitchenGameManager : NetworkBehaviour
 
     private void CurrentStateOnValueChange(GameState previousState, GameState newState)
     {
-        Debug.Log(currentState.Value);
         OnStateChange?.Invoke();
     }
 
@@ -150,6 +149,11 @@ public class KitchenGameManager : NetworkBehaviour
     public bool IsGamePlaying()
     {
         return currentState.Value == GameState.GamePlaying;
+    }
+
+    public bool IsWaitingToStart()
+    {
+        return currentState.Value == GameState.WaitingToStart;
     }
 
     public bool IsCountDownToStartActive()
