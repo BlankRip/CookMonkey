@@ -32,7 +32,7 @@ public class KitchenGameManager : NetworkBehaviour
     private NetworkVariable<float> countDownToStartTimer = new NetworkVariable<float>(3.0f);
     private NetworkVariable<float> gamePlayTimer = new NetworkVariable<float>(0.0f);
     private float gamePlayTimerMax = 300.0f;
-    private bool isGamePaused = false;
+    public bool IsGamePaused { get; private set; }
 
 
     private void Start()
@@ -131,17 +131,20 @@ public class KitchenGameManager : NetworkBehaviour
 
     public void TogglePause()
     {
-        if (!isGamePaused)
+        if (!IsGamePaused)
         {
-            Time.timeScale = 0.0f;
-            isGamePaused = true;
+            if(NetworkStatics.PlayingSinglePlayer)
+            {
+                Time.timeScale = 0.0f;
+            }
+            IsGamePaused = true;
         }
         else
         {
             Time.timeScale = 1.0f;
-            isGamePaused = false;
+            IsGamePaused = false;
         }
-        OnGamePauseToggled?.Invoke(isGamePaused);
+        OnGamePauseToggled?.Invoke(IsGamePaused);
     }
 
     public bool IsGamePlaying()
