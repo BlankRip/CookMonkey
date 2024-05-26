@@ -22,7 +22,7 @@ public class TutorialUI : MonoBehaviour
     private void Start()
     {
         GameInput.Instance.OnRebind += UpdateVisuals;
-        KitchenGameManager.Instance.OnStateChange += KitchenGameManger_OnStateChanged;
+        KitchenGameManager.Instance.OnLocalPlayerReadyChanged += KitchenGameManager_OnLocalPlayerReadyChanged;
         removedOnStateChangedListner = false;
         UpdateVisuals();
     }
@@ -32,7 +32,7 @@ public class TutorialUI : MonoBehaviour
         GameInput.Instance.OnRebind -= UpdateVisuals;
         if(!removedOnStateChangedListner)
         {
-            KitchenGameManager.Instance.OnStateChange -= KitchenGameManger_OnStateChanged;
+            KitchenGameManager.Instance.OnLocalPlayerReadyChanged -= KitchenGameManager_OnLocalPlayerReadyChanged;
         }
     }
 
@@ -51,12 +51,12 @@ public class TutorialUI : MonoBehaviour
         gamePadPauseKeyText.SetText(GameInput.Instance.GetBindingText(GameInput.Binding.GamePad_Pause));
     }
 
-    private void KitchenGameManger_OnStateChanged()
+    private void KitchenGameManager_OnLocalPlayerReadyChanged()
     {
-        if (KitchenGameManager.Instance.IsCountDownToStartActive())
+        if(KitchenGameManager.Instance.IsLocalPlayerReady)
         {
             this.gameObject.SetActive(false);
-            GameInput.Instance.OnInteractAction -= KitchenGameManger_OnStateChanged;
+            KitchenGameManager.Instance.OnLocalPlayerReadyChanged -= KitchenGameManager_OnLocalPlayerReadyChanged;
             removedOnStateChangedListner = true;
         }
     }
