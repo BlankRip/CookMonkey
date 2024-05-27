@@ -13,6 +13,7 @@ public class MusicManager : MonoBehaviour
         {
             Instance = this;
             volume = PlayerPrefs.GetFloat(PLAYER_PREFS_MUSIC_VOLUME_KEY, 0.3f);
+            DontDestroyOnLoad(this.gameObject);
         }
         else
         {

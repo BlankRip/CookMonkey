@@ -27,6 +27,7 @@ public class KitchenGameManager : NetworkBehaviour
     public event Action OnLocalPlayerReadyChanged;
     public bool IsLocalPlayerReady { get; private set; }
     private Dictionary<ulong, bool> playerReadyDictionary = new Dictionary<ulong, bool>();
+    [SerializeField] private Transform playerPrefab;
 
     private NetworkVariable<GameState> currentState = new NetworkVariable<GameState>(GameState.WaitingToStart);
     private NetworkVariable<float> countDownToStartTimer = new NetworkVariable<float>(3.0f);
@@ -44,6 +45,20 @@ public class KitchenGameManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         currentState.OnValueChanged += CurrentStateOnValueChange;
+
+        if(IsServer)
+        {
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += NetworkManager_OnLoadEventCompleted;
+        }
+    }
+
+    private void NetworkManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Transform playerTransform = Instantiate(playerPrefab);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        }
     }
 
     private void CurrentStateOnValueChange(GameState previousState, GameState newState)
