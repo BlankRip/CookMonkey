@@ -54,7 +54,20 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     {
         NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallBack;
         NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_HostOnClientDisconnectCallback;
         NetworkManager.Singleton.StartHost();
+    }
+
+    private void NetworkManager_HostOnClientDisconnectCallback(ulong clientId)
+    {
+        for (int i = 0; i < playerDataNetworkList.Count; i++)
+        {
+            if (playerDataNetworkList[i].clientId == clientId)
+            {
+                playerDataNetworkList.RemoveAt(i);
+                return;
+            }
+        }
     }
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
@@ -85,11 +98,11 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     public void StartClient()
     {
         OnTryingToJoinGame?.Invoke();
-        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_ClientOnClientDisconnectCallback;
         NetworkManager.Singleton.StartClient();
     }
 
-    private void NetworkManager_OnClientDisconnectCallback(ulong obj)
+    private void NetworkManager_ClientOnClientDisconnectCallback(ulong obj)
     {
         OnFailedToJoinGame?.Invoke();
     }
@@ -121,7 +134,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         return default;
     }
 
-    private int GetPlayerDataIndexFromClientId(ulong clientId)
+    public int GetPlayerDataIndexFromClientId(ulong clientId)
     {
         for (int i = 0; i < playerDataNetworkList.Count; i++)
         {
