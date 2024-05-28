@@ -11,8 +11,9 @@ public class KitchenGameMultiplayer : NetworkBehaviour
 
     public event Action OnTryingToJoinGame;
     public event Action OnFailedToJoinGame;
+    public event Action OnPlayerDataNetworkListChanged;
 
-
+    private NetworkList<PlayerData> playerDataNetworkList;
     private const int MAX_PLAYER_AMOUNT = 4;
     [SerializeField] private KitchenObjectSOList allKitchenObjects;
     private Dictionary<KitchenObjectSO, int> allKitchenObjectsIndexDictionary;
@@ -22,6 +23,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         if(Instance == null)
         {
             Instance = this;
+            playerDataNetworkList = new NetworkList<PlayerData>();
             allKitchenObjectsIndexDictionary = new Dictionary<KitchenObjectSO, int>();
             for (int i = 0; i < allKitchenObjects.KitchenObjects.Count; i++)
             {
@@ -35,10 +37,26 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         }
     }
 
+    private void Start()
+    {
+        playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+    }
+
+    private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
+    {
+        OnPlayerDataNetworkListChanged?.Invoke();
+    }
+
     public void StartHost()
     {
         NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallBack;
+        NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         NetworkManager.Singleton.StartHost();
+    }
+
+    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    {
+        playerDataNetworkList.Add(new PlayerData(clientId));
     }
 
     private void NetworkManager_ConnectionApprovalCallBack(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, 
@@ -72,6 +90,21 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     {
         OnFailedToJoinGame?.Invoke();
     }
+
+    public bool IsPlayerIndexConnected(int playerIndex)
+    {
+        return playerIndex < playerDataNetworkList.Count;
+    }
+
+    public PlayerData GetPlayerDataFromPlayerIndex(int playerIndex)
+    {
+        return playerDataNetworkList[playerIndex];
+    }
+
+
+
+
+
 
     public int GetKitchonObjectSOIndex(KitchenObjectSO kitchenObjectSO)
     {
