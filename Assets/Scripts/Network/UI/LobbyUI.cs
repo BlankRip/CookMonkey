@@ -14,9 +14,15 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private TMP_InputField lobbyCodeInputField;
     [SerializeField] private Button codeJoinButton;
 
+    private const string JIBBRISH_CODE_TO_FORCE_FAIL = "JIB";
+
     private void Start()
     {
-        mainMenuButton.onClick.AddListener(() => Loader.Load(Loader.Scene.MainMenuScene));
+        mainMenuButton.onClick.AddListener(() =>
+        {
+            KitchenGameLobby.Instance.LeaveLobby();
+            Loader.Load(Loader.Scene.MainMenuScene); 
+        });
         createLobbyButton.onClick.AddListener(() => lobbyCreateUI.Show()); 
         quickJoinButton.onClick.AddListener(() => KitchenGameLobby.Instance.QuickJoin());
         codeJoinButton.onClick.AddListener(() => JoinLobbyByCode());
@@ -27,6 +33,10 @@ public class LobbyUI : MonoBehaviour
         if(!string.IsNullOrEmpty(lobbyCodeInputField.text))
         {
             KitchenGameLobby.Instance.JoinLobbyWithCode(lobbyCodeInputField.text);
+        }
+        else
+        {
+            KitchenGameLobby.Instance.JoinLobbyWithCode(JIBBRISH_CODE_TO_FORCE_FAIL);
         }
     }
 }

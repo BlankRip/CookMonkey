@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
@@ -25,6 +26,11 @@ public class KitchenGameLobby : MonoBehaviour
         }
     }
     #endregion
+
+    public event Action OnCreateLobbyStarted;
+    public event Action OnCreateLobbyFailed;
+    public event Action OnJoinStarted;
+    public event Action OnJoinFailed;
 
     public Lobby JoinedLobby { get; private set; }
     private float heatbeatTimer;
@@ -58,7 +64,7 @@ public class KitchenGameLobby : MonoBehaviour
         if(UnityServices.State != ServicesInitializationState.Initialized)
         {
             InitializationOptions initializationOptions = new InitializationOptions();
-            initializationOptions.SetProfile(Random.Range(0, 10000).ToString());
+            initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
 
             await UnityServices.InitializeAsync(initializationOptions);
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -67,6 +73,7 @@ public class KitchenGameLobby : MonoBehaviour
 
     public async void CreateLobby(string lobbyName, bool isPrivate)
     {
+        OnCreateLobbyStarted?.Invoke();
         try
         {
             JoinedLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, KitchenGameMultiplayer.MAX_PLAYER_AMOUNT, 
@@ -78,11 +85,13 @@ public class KitchenGameLobby : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnCreateLobbyFailed?.Invoke();
         }
     }
 
     public async void QuickJoin()
     {
+        OnJoinStarted?.Invoke();
         try
         {
             JoinedLobby = await LobbyService.Instance.QuickJoinLobbyAsync();
@@ -92,11 +101,13 @@ public class KitchenGameLobby : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnJoinFailed?.Invoke();
         }
     }
 
     public async void JoinLobbyWithCode(string code)
     {
+        OnJoinStarted?.Invoke();
         try
         {
             JoinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code);
@@ -106,6 +117,39 @@ public class KitchenGameLobby : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnJoinFailed?.Invoke();
+        }
+    }
+
+    public async void LeaveLobby()
+    {
+        if (JoinedLobby != null)
+        {
+            try
+            {
+                await LobbyService.Instance.RemovePlayerAsync(JoinedLobby.Id, AuthenticationService.Instance.PlayerId);
+                JoinedLobby = null;
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+    }
+
+    public async void DeleteLobby()
+    {
+        if(JoinedLobby != null)
+        {
+            try
+            {
+                await LobbyService.Instance.DeleteLobbyAsync(JoinedLobby.Id);
+                JoinedLobby = null;
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
         }
     }
 }

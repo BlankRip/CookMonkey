@@ -11,6 +11,8 @@ public class LobbyCreateUI : MonoBehaviour
     [SerializeField] private Button createPrivateButton;
     [SerializeField] private TMP_InputField lobbyNameInputField;
 
+    private const string NO_LOBBY_NAME_PROVIDED = "No Name Given";
+
     private void Start()
     {
         closeButton.onClick.AddListener(() => this.gameObject.SetActive(false));
@@ -23,6 +25,10 @@ public class LobbyCreateUI : MonoBehaviour
         if(!string.IsNullOrEmpty(lobbyNameInputField.text))
         {
             KitchenGameLobby.Instance.CreateLobby(lobbyNameInputField.text, isPrivate);
+        }
+        else
+        {
+            KitchenGameLobby.Instance.CreateLobby(NO_LOBBY_NAME_PROVIDED, isPrivate);
         }
     }
 

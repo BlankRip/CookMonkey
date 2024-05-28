@@ -2802,7 +2802,7 @@ GameObject:
   - component: {fileID: 1115421209}
   - component: {fileID: 1115421210}
   m_Layer: 5
-  m_Name: ConnectionResponseMessageUI
+  m_Name: LobbyMessageUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
