@@ -17,7 +17,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     [SerializeField] private List<Color> playerColorList;
 
 
-    private const int MAX_PLAYER_AMOUNT = 4;
+    public const int MAX_PLAYER_AMOUNT = 4;
     [SerializeField] private KitchenObjectSOList allKitchenObjects;
     private Dictionary<KitchenObjectSO, int> allKitchenObjectsIndexDictionary;
 
