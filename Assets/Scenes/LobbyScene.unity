@@ -907,6 +907,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fc38d03d41044649842381e0f370136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerColorList:
+  - {r: 1, g: 0.7058824, b: 0, a: 1}
+  - {r: 0.42303184, g: 0.990566, b: 0, a: 1}
+  - {r: 1, g: 0.49459833, b: 0, a: 1}
+  - {r: 0, g: 0.9505663, b: 1, a: 1}
+  - {r: 0.6313726, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0.8235294, a: 1}
+  - {r: 0, g: 0, b: 0.85882354, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+  - {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 1}
   allKitchenObjects: {fileID: 11400000, guid: 8c907831e3b4ea24dbc221fa50bf7d33, type: 2}
 --- !u!4 &1322866401
 Transform:

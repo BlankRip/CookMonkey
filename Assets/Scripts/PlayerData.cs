@@ -7,20 +7,23 @@ using UnityEngine;
 
 public struct PlayerData: IEquatable<PlayerData>, INetworkSerializable
 {
-    public ulong clientID;
+    public ulong clientId;
+    public int colorId;
 
-    public PlayerData(ulong clientID)
+    public PlayerData(ulong clientId, int colorId)
     {
-        this.clientID = clientID;
+        this.clientId = clientId;
+        this.colorId = colorId;
     }
 
     public bool Equals(PlayerData other)
     {
-        return clientID == other.clientID;
+        return clientId == other.clientId && colorId == other.colorId;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
-        serializer.SerializeValue(ref clientID);
+        serializer.SerializeValue(ref clientId);
+        serializer.SerializeValue(ref colorId);
     }
 }

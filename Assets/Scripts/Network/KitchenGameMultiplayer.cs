@@ -14,6 +14,9 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     public event Action OnPlayerDataNetworkListChanged;
 
     private NetworkList<PlayerData> playerDataNetworkList;
+    [SerializeField] private List<Color> playerColorList;
+
+
     private const int MAX_PLAYER_AMOUNT = 4;
     [SerializeField] private KitchenObjectSOList allKitchenObjects;
     private Dictionary<KitchenObjectSO, int> allKitchenObjectsIndexDictionary;
@@ -56,7 +59,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
     {
-        playerDataNetworkList.Add(new PlayerData(clientId));
+        playerDataNetworkList.Add(new PlayerData(clientId, GetFirstUnusedColor()));
     }
 
     private void NetworkManager_ConnectionApprovalCallBack(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, 
@@ -101,6 +104,77 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         return playerDataNetworkList[playerIndex];
     }
 
+    public PlayerData GetLocalPlayerData()
+    {
+        return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
+    }
+
+    public PlayerData GetPlayerDataFromClientId(ulong clientId)
+    {
+        foreach (PlayerData playerData in playerDataNetworkList)
+        {
+            if(playerData.clientId == clientId)
+            {
+                return playerData;
+            }
+        }
+        return default;
+    }
+
+    private int GetPlayerDataIndexFromClientId(ulong clientId)
+    {
+        for (int i = 0; i < playerDataNetworkList.Count; i++)
+        {
+            if (playerDataNetworkList[i].clientId == clientId)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public Color GetPlayerColor(int colorId)
+    {
+        return playerColorList[colorId];
+    }
+
+    public void ChangePlayerColor(int colorId)
+    {
+        ChangePlayerColorServerRpc(colorId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangePlayerColorServerRpc(int colorId, ServerRpcParams serverRpcParams = default)
+    {
+        if(IsColorAvailable(colorId))
+        {
+            int playerDataIndex = GetPlayerDataIndexFromClientId(serverRpcParams.Receive.SenderClientId);
+            PlayerData playerData = playerDataNetworkList[playerDataIndex];
+            playerData.colorId = colorId;
+            playerDataNetworkList[playerDataIndex] = playerData;
+        }
+    }
+
+    private bool IsColorAvailable(int colorId)
+    {
+        foreach (PlayerData playerData in playerDataNetworkList)
+        {
+            if (playerData.colorId == colorId)
+                return false;
+        }
+
+        return true;
+    }
+
+    private int GetFirstUnusedColor()
+    {
+        for (int i = 0; i < playerColorList.Count; i++)
+        {
+            if (IsColorAvailable(i))
+                return i;
+        }
+        return -1;
+    }
 
 
 
