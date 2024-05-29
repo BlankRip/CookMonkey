@@ -43,6 +43,13 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     private void Start()
     {
         playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+
+        //Below Does not work
+        if(NetworkStatics.PlayingSinglePlayer)
+        {
+            StartHost();
+            Loader.Load(Loader.Scene.GameScene);
+        }
     }
 
     private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent)
