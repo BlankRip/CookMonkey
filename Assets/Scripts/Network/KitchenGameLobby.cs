@@ -71,6 +71,7 @@ public class KitchenGameLobby : MonoBehaviour
         if(UnityServices.State != ServicesInitializationState.Initialized)
         {
             InitializationOptions initializationOptions = new InitializationOptions();
+            //Comment the set profile line; it exist so that we can have multiple builds on the same pc for testing
             initializationOptions.SetProfile(UnityEngine.Random.Range(0, 10000).ToString());
 
             await UnityServices.InitializeAsync(initializationOptions);
