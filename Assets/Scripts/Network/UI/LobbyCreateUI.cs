@@ -35,5 +35,6 @@ public class LobbyCreateUI : MonoBehaviour
     public void Show()
     {
         this.gameObject.SetActive(true);
+        createPublicButton.Select();
     }
 }

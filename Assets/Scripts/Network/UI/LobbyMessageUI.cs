@@ -69,6 +69,7 @@ public class LobbyMessageUI : MonoBehaviour
     private void ShowMessage(string message)
     {
         messageText.SetText(message);
+        closeButton.Select();
         this.gameObject.SetActive(true);
     }
 }

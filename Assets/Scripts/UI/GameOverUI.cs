@@ -29,7 +29,7 @@ public class GameOverUI : MonoBehaviour
         {
             recipesDeliveredText.SetText(DeliveryManager.Instance.GetSuccessfulDeliveriesAmount().ToString());
             gameObject.SetActive(true);
-            playAgainButton.Select();
+            mainMenuButton.Select();
         }
         else
         {

@@ -33,6 +33,7 @@ public class HostDisconnectedUI : MonoBehaviour
     {
         if(clientId == NetworkManager.ServerClientId)
         {
+            mainMenuButton.Select();
             gameObject.SetActive(true);
         }
     }
